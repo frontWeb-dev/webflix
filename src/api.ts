@@ -41,8 +41,49 @@ export interface IMoiveDetail {
   runtime: number;
   backdrop_path: string;
   release_date: string;
+  poster_path: string;
 }
 
+export interface ISearch {
+  results: [
+    {
+      id: number;
+      original_title: string;
+      backdrop_path: string;
+      poster_path: string;
+      overview: string;
+      vote_average: number;
+      title: string;
+    }
+  ];
+  total_results: number;
+  total_pages: number;
+}
+
+export interface IMovies {
+  results: [
+    {
+      id: number;
+      poster_path: string;
+      backdrop_path: string;
+      overview: string;
+      release_date: string;
+      original_title: string;
+      vote_average: number;
+    }
+  ];
+}
+
+export interface IMovieVideo {
+  results: [
+    {
+      name: string;
+      type: string;
+      published_at: string;
+      key: string;
+    }
+  ];
+}
 // function
 export function getMovies() {
   return fetch(
@@ -56,16 +97,34 @@ export function getTv() {
   );
 }
 
-export function getMovieDetail(movieId: string) {
+export function getMovieDetail(movieId?: string) {
   return fetch(
     `${BASE_URL}/movie/${movieId}?api_key=${API_KEY}&language=ko`
   ).then((response) => response.json());
 }
 
-// id: 752623;
-// original_title: 'The Lost City';
-// overview: '전설의 트레저를 차지하기 위해 재벌 페어팩스(다니엘 래드클리프)는  유일한 단서를 알고 있는 베스트셀러 작가 로레타(산드라 블록)를 납치하게 된다.  어쩔 수 없는 비지니스 관계로 사라진 그녀를 찾아야만 하는 책 커버모델 앨런(채닝 테이텀)은  의문의 파트너(브래드 피트)와 함께 위험한 섬에서 그녀를 구하고 무사히 탈출해야만 하는데…  적과 자연의 위험이 도사리는 일촉즉발 화산섬.';
-// backdrop_path: '/A3bsT0m1um6tvcmlIGxBwx9eAxn.jpg';
-// poster_path: '/8kZapNBZYGJu7AUbJVBDMmQgO1D.jpg';
-// release_date: '2022-03-24';
-// vote_average: 6.8;
+export function SearchMovie(keyword: string | null) {
+  return fetch(
+    `${BASE_URL}/search/movie?api_key=${API_KEY}&language=ko&query=${keyword}`
+  ).then((response) => response.json());
+}
+
+export function SearchTv(keyword: string | null) {
+  return fetch(
+    `${BASE_URL}/search/tv?api_key=${API_KEY}&language=ko&query=${keyword}`
+  ).then((response) => response.json());
+}
+
+// upcoming movies
+export function upcomingMovies() {
+  return fetch(
+    `${BASE_URL}/movie/upcoming?api_key=${API_KEY}&language=ko`
+  ).then((response) => response.json());
+}
+
+// video
+export function getMovieVideo(movieId: any) {
+  return fetch(`${BASE_URL}/movie/${movieId}/videos?api_key=${API_KEY}`).then(
+    (response) => response.json()
+  );
+}
