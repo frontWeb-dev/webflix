@@ -1,17 +1,11 @@
 import styled from 'styled-components';
-import { useState } from 'react';
-import {
-  useMatch,
-  useNavigate,
-  PathMatch,
-  useOutletContext,
-} from 'react-router-dom';
+
+import { useNavigate } from 'react-router-dom';
 import { useQuery } from 'react-query';
-import { motion, AnimatePresence, useViewportScroll } from 'framer-motion';
+import { motion, useViewportScroll } from 'framer-motion';
 
 // icon
-import { MdPlayArrow } from 'react-icons/md';
-import { AiOutlineInfoCircle } from 'react-icons/ai';
+
 import { BiPlay, BiPlus, BiLike, BiDislike } from 'react-icons/bi';
 
 import { getMovieDetail, IMoiveDetail } from '../api';
@@ -37,8 +31,8 @@ const MovieInfo = styled(motion.div)`
   left: 0;
   right: 0;
   margin: 0 auto;
-  width: 35vw;
-  min-height: 70vh;
+  width: 32vw;
+  min-height: 65vh;
   border-radius: 10px;
   background-color: ${(props) => props.theme.black.darker};
   overflow: hidden;
@@ -53,7 +47,7 @@ const Image = styled.div<{ bgPhoto: string }>`
 `;
 const Info = styled.div`
   width: 100%;
-  padding: 30px;
+  padding: 0 30px;
   font-family: Arial, Helvetica, sans-serif;
 
   p {
@@ -127,11 +121,10 @@ function Movie({ movieId }: any) {
   const onOverlayClicked = () => history('/');
 
   const { scrollY } = useViewportScroll();
-
   const { data, isLoading } = useQuery<IMoiveDetail>(['movie', movieId], () =>
     getMovieDetail(movieId)
   );
-  console.log(data);
+
   return (
     <>
       {isLoading ? (

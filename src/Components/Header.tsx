@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Link, useMatch } from 'react-router-dom';
+import { Link, useMatch, useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import { motion, useAnimation, useViewportScroll } from 'framer-motion';
 
@@ -8,6 +9,7 @@ const Top = styled(motion.header)`
   width: 100%;
   position: fixed;
   top: 0;
+  z-index: 9999;
 `;
 const Nav = styled.nav`
   width: 1800px;
@@ -63,7 +65,7 @@ const Circle = styled(motion.span)`
   border-radius: 5px;
   background-color: ${(props) => props.theme.red};
 `;
-const Search = styled(motion.div)`
+const Search = styled(motion.form)`
   color: white;
   display: flex;
   align-items: center;
@@ -100,7 +102,12 @@ const navVariants = {
   scroll: { backgroundColor: 'rgba(0, 0, 0, 1)' },
 };
 
+// interface
+interface IForm {
+  keyword: string;
+}
 function Header() {
+  const history = useNavigate();
   const homeMatch = useMatch('/');
   const tvMatch = useMatch('tv');
   const moviesMatch = useMatch('movie');
@@ -130,6 +137,10 @@ function Header() {
     });
   }, [scrollY]);
 
+  const { register, handleSubmit } = useForm<IForm>();
+  const onVaild = (data: IForm) => {
+    history(`/search?keyword=${data.keyword}`);
+  };
   return (
     <Top variants={navVariants} animate={navAnimation} initial='up'>
       <Nav>
@@ -158,7 +169,7 @@ function Header() {
               </Link>
             </Menu>
             <Menu>
-              <Link to='/'>
+              <Link to='movies'>
                 Movies
                 {moviesMatch && <Circle layoutId='circle' />}
               </Link>
@@ -166,7 +177,7 @@ function Header() {
           </Menus>
         </Col>
         <Col>
-          <Search>
+          <Search onSubmit={handleSubmit(onVaild)}>
             <motion.svg
               onClick={toggleSearch}
               animate={{ x: searchOpen ? -180 : 0 }}
@@ -178,6 +189,7 @@ function Header() {
               <path d='M464 428L339.92 303.9a160.48 160.48 0 0030.72-94.58C370.64 120.37 298.27 48 209.32 48S48 120.37 48 209.32s72.37 161.32 161.32 161.32a160.48 160.48 0 0094.58-30.72L428 464zM209.32 319.69a110.38 110.38 0 11110.37-110.37 110.5 110.5 0 01-110.37 110.37z'></path>
             </motion.svg>
             <Input
+              {...register('keyword', { required: true, minLength: 2 })}
               animate={inputAnimation}
               initial={{ scaleX: 0 }}
               transition={{ type: 'linear' }}

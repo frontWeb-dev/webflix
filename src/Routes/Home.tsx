@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { useState } from 'react';
-import { useMatch, useNavigate, PathMatch, Outlet } from 'react-router-dom';
+import { useMatch, useNavigate, PathMatch } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import { motion, AnimatePresence, useViewportScroll } from 'framer-motion';
 
@@ -9,7 +9,7 @@ import { MdPlayArrow } from 'react-icons/md';
 import { AiOutlineInfoCircle } from 'react-icons/ai';
 import { BiPlay, BiPlus, BiLike, BiDislike } from 'react-icons/bi';
 
-import { getMovies, getTv, IGetMoivesResult } from '../api';
+import { getMovies, IGetMoivesResult } from '../api';
 import { makeImagePath } from '../utils';
 import Movie from '../Components/Movie';
 
@@ -200,8 +200,7 @@ function Home() {
   const [leaving, setLeaving] = useState(false);
 
   const history = useNavigate();
-  const bigMovieMatch: PathMatch<string> | null = useMatch('movies/:movieId');
-  const { scrollY } = useViewportScroll();
+  const bigMovieMatch: PathMatch<string> | null = useMatch('info/:movieId');
   const { data: movieData, isLoading: movieLoading } =
     useQuery<IGetMoivesResult>(['movies', 'nowPlaying'], getMovies);
 
@@ -219,9 +218,8 @@ function Home() {
   };
   const toggleLeaving = () => setLeaving((prev) => !prev);
   const onBoxClicked = (movieId: number) => {
-    history(`/movies/${movieId}`);
+    history(`/info/${movieId}`);
   };
-  const onOverlayClicked = () => history('/');
 
   return (
     <Wrapper>
@@ -300,7 +298,7 @@ function Home() {
           </Slider>
           <AnimatePresence>
             {bigMovieMatch ? (
-              <Movie movieId={bigMovieMatch.params.movieId} />
+              <Movie movieId={bigMovieMatch?.params.movieId} />
             ) : null}
           </AnimatePresence>
         </>
