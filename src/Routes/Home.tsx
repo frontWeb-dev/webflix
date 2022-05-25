@@ -1,17 +1,19 @@
 import styled from 'styled-components';
-import { useState } from 'react';
-import { useMatch, useNavigate, PathMatch } from 'react-router-dom';
+import { useMatch, PathMatch } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import { motion, AnimatePresence, useViewportScroll } from 'framer-motion';
 
 // icon
 import { MdPlayArrow } from 'react-icons/md';
 import { AiOutlineInfoCircle } from 'react-icons/ai';
-import { BiPlay, BiPlus, BiLike, BiDislike } from 'react-icons/bi';
 
-import { getMovies, IGetMoivesResult } from '../api';
-import { makeImagePath } from '../utils';
-import Movie from '../Components/Movie';
+import { getMovies, IGetMoivesResult } from '../API/api';
+import { makeImagePath } from '../API/utils';
+
+// components
+import Detail from '../Components/Detail';
+import MovieSlider from '../Components/MovieSlider';
+import TvSlider from '../Components/tvSlider';
 
 // style
 const Wrapper = styled.div`
@@ -72,154 +74,20 @@ const Buttons = styled.div`
     }
   }
 `;
-const Slider = styled.div`
-  position: relative;
-  top: -150px;
-`;
-const Category = styled.h3`
-  margin-bottom: 15px;
-  padding-left: 60px;
-  font-size: 1.5vw;
-`;
-const Row = styled(motion.div)`
-  width: 100%;
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  position: absolute;
-  gap: 10px;
-  padding: 0 60px;
-`;
-const Box = styled(motion.div)`
-  height: 260px;
-  font-size: 1vw;
-  border-radius: 5px;
-  overflow: hidden;
-
-  &:first-child {
-    transform-origin: center left;
-  }
-  &:last-child {
-    transform-origin: center right;
-  }
-`;
-const Image = styled.div<{ bgPhoto: string }>`
-  width: 100%;
-  height: 180px;
-  background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5)),
-    url(${(props) => props.bgPhoto});
-  background-size: cover;
-  background-position: center center;
-`;
-const Info = styled(motion.div)`
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  padding: 10px;
-  opacity: 0;
-  font-size: 0.6vw;
-  font-family: Arial, Helvetica, sans-serif;
-  background-color: ${(props) => props.theme.black.darker};
-
-  h4 {
-    margin-bottom: 5px;
-    font-size: 0.8vw;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-  }
-  span {
-    margin-right: 5px;
-  }
-`;
-const Icons = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-  button {
-    padding: 0;
-    margin-right: 5px;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    color: #fff;
-  }
-  svg {
-    padding: 4px;
-    font-size: 30px;
-    border: 1px solid #fff;
-    border-radius: 50%;
-  }
-`;
-
-// variants
-const rowVariants = {
-  hidden: {
-    x: window.outerWidth + 10,
-  },
-  visible: {
-    x: 0,
-  },
-  exit: {
-    x: -window.outerWidth - 10,
-  },
-};
-const BoxVariants = {
-  normal: {
-    scale: 1,
-  },
-  hover: {
-    scale: 1.3,
-    y: -50,
-    transition: {
-      type: 'tween',
-      delay: 0.5,
-      duration: 0.3,
-    },
-  },
-};
-const infoVariants = {
-  hover: {
-    opacity: 1,
-    transition: {
-      type: 'tween',
-      delay: 0.5,
-      duration: 0.3,
-    },
-  },
-};
 
 // interface
 export interface IMovieId {
   movieId: string;
 }
 
-const offset = 6; // 한 번에 보여줄 영화 수
-
 function Home() {
-  const [index, setIndex] = useState(0);
-  const [leaving, setLeaving] = useState(false);
-
-  const history = useNavigate();
   const bigMovieMatch: PathMatch<string> | null = useMatch('info/:movieId');
+
+  // query
   const { data: movieData, isLoading: movieLoading } =
     useQuery<IGetMoivesResult>(['movies', 'nowPlaying'], getMovies);
 
   // fn
-  const increaseIndex = () => {
-    if (movieData) {
-      if (leaving) return;
-
-      const totalMovie = movieData?.results.length - 1;
-      const maxIndex = Math.floor(totalMovie / offset) - 1;
-
-      toggleLeaving();
-      setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
-    }
-  };
-  const toggleLeaving = () => setLeaving((prev) => !prev);
-  const onBoxClicked = (movieId: number) => {
-    history(`/info/${movieId}`);
-  };
 
   return (
     <Wrapper>
@@ -228,7 +96,6 @@ function Home() {
       ) : (
         <>
           <Banner
-            onClick={increaseIndex}
             bgPhoto={makeImagePath(movieData?.results[0].backdrop_path || '')}
           >
             <Title>{movieData?.results[0].original_title}</Title>
@@ -244,61 +111,15 @@ function Home() {
               </button>
             </Buttons>
           </Banner>
-          <Slider>
-            <Category>Now Playing</Category>
-            <AnimatePresence onExitComplete={toggleLeaving}>
-              <Row
-                key={index}
-                variants={rowVariants}
-                initial='hidden'
-                animate='visible'
-                exit='exit'
-                transition={{ type: 'tween', duration: 1 }}
-              >
-                {movieData?.results
-                  .slice(1)
-                  .slice(offset * index, offset * index + offset)
-                  .map((movie) => (
-                    <Box
-                      key={movie.id}
-                      layoutId={movie.id + ''}
-                      onClick={() => onBoxClicked(movie.id)}
-                      variants={BoxVariants}
-                      whileHover='hover'
-                      initial='normal'
-                      transition={{ type: 'tween' }}
-                    >
-                      <Image bgPhoto={makeImagePath(movie.backdrop_path)} />
-                      <Info variants={infoVariants}>
-                        <Icons>
-                          <button>
-                            <BiPlay />
-                          </button>
-                          <button>
-                            <BiPlus />
-                          </button>
-                          <button>
-                            <BiLike />
-                          </button>
-                          <button>
-                            <BiDislike />
-                          </button>
-                        </Icons>
-                        <h4>{movie.original_title}</h4>
-                        <p>
-                          <span>{movie.release_date}</span>
-                          <span> &#47;</span>
-                          <span>⭐ {movie.vote_average}</span>
-                        </p>
-                      </Info>
-                    </Box>
-                  ))}
-              </Row>
-            </AnimatePresence>
-          </Slider>
+
+          <MovieSlider />
+
           <AnimatePresence>
             {bigMovieMatch ? (
-              <Movie movieId={bigMovieMatch?.params.movieId} />
+              <Detail
+                key={bigMovieMatch?.params.movieId}
+                movieId={bigMovieMatch?.params.movieId}
+              />
             ) : null}
           </AnimatePresence>
         </>

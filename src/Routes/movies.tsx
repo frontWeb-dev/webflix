@@ -9,8 +9,8 @@ import { MdPlayArrow } from 'react-icons/md';
 import { AiOutlineInfoCircle } from 'react-icons/ai';
 import { BiPlay, BiPlus, BiLike, BiDislike } from 'react-icons/bi';
 
-import { IMovies, upcomingMovies } from '../api';
-import { makeImagePath } from '../utils';
+import { IMovies, upcomingMovies } from '../API/api';
+import { makeImagePath } from '../API/utils';
 
 // style
 const Wrapper = styled.div`

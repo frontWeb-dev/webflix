@@ -110,7 +110,7 @@ function Header() {
   const history = useNavigate();
   const homeMatch = useMatch('/');
   const tvMatch = useMatch('tv');
-  const moviesMatch = useMatch('movie');
+  const moviesMatch = useMatch('movies');
 
   const { scrollY } = useViewportScroll();
   const inputAnimation = useAnimation();
@@ -163,7 +163,7 @@ function Header() {
               </Link>
             </Menu>
             <Menu>
-              <Link to='tv'>
+              <Link to='Tv'>
                 TV Shows
                 {tvMatch && <Circle layoutId='circle' />}
               </Link>

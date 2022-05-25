@@ -3,9 +3,9 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 // style
 import Header from './Components/Header';
 import Home from './Routes/Home';
-import TV from './Routes/TV';
+import TvShow from './Routes/TvShow';
 import Movies from './Routes/movies';
-import Media from './Routes/Media';
+import MovieDetail from './Routes/MovieDetail';
 import Search from './Routes/Search';
 
 function App() {
@@ -16,9 +16,9 @@ function App() {
         <Route path='/' element={<Home />}>
           <Route path='info/:id' element={<Home />} />
         </Route>
-        <Route path='tv' element={<TV />} />
+        <Route path='tv' element={<TvShow />} />
         <Route path='movies' element={<Movies />} />
-        <Route path='movies/:id' element={<Media />} />
+        <Route path='movies/:id' element={<MovieDetail />} />
 
         <Route path='search' element={<Search />} />
       </Routes>

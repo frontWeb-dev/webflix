@@ -3,9 +3,8 @@ import { useQuery } from 'react-query';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
-import Movie from '../Components/Movie';
-import { ISearch, SearchTv, SearchMovie } from '../api';
-import { makeImagePath } from '../utils';
+import { ISearch, SearchTv, SearchMovie } from '../API/api';
+import { makeImagePath } from '../API/utils';
 
 // style
 const Wrapper = styled.div`
