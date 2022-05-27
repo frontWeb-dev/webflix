@@ -49,24 +49,25 @@ const Info = styled.div`
   width: 50vw;
 `;
 const Title = styled.h2`
-  font-size: 2vw;
-  margin-bottom: 10px;
+  font-size: 1.8vw;
+  margin: 0 0 10px 0;
   span {
-    font-size: 1.5vw;
-  }
-
-  &:last-of-type {
-    font-size: 1.2vw;
-    margin: 20px 0 5px 0;
+    font-size: 1.3vw;
   }
 `;
 const Infos = styled.p`
   margin-bottom: 10px;
 `;
 const Overview = styled.p`
+  display: -webkit-box;
   margin-bottom: 30px;
   font-size: 0.8vw;
   font-family: Arial, Helvetica, sans-serif;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  word-break: break-word;
+  overflow: hidden;
 `;
 const SimilarMovies = styled.div`
   display: flex;
@@ -82,7 +83,10 @@ const SimilarMovie = styled.div<{ bgPhoto: string }>`
   background-repeat: no-repeat;
   border: 1px solid ${(props) => props.theme.black.lighter};
 `;
-
+const SubTitle = styled.h3`
+  font-size: 1.2vw;
+  margin: 30px 0 10px 0;
+`;
 function MovieDetail() {
   const moviesMatch = useMatch('/movies/:movieId');
   const { data, isLoading } = useQuery<IMoiveDetail>(
@@ -127,7 +131,7 @@ function MovieDetail() {
                 muted={true}
               ></ReactPlayer>
               <div>
-                <Title>Similar Movies 👍</Title>
+                <SubTitle>Similar Movies 👍</SubTitle>
                 <SimilarMovies>
                   {similarData?.results.slice(0, 5).map((i) => {
                     return (

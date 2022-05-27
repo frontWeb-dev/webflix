@@ -96,7 +96,6 @@ const Overview = styled.div`
   border-bottom: 1px dotted ${(props) => props.theme.white.darker};
   p {
     display: -webkit-box;
-
     word-break: break-word;
     overflow: hidden;
     text-overflow: ellipsis;

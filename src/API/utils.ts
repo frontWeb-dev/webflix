@@ -7,5 +7,9 @@ export function makeImagePath(id: string, format?: string) {
 }
 
 export function makeVideoPath(key?: string) {
-  return `https://www.youtube.com/embed/${key}`;
+  if (key) {
+    return `https://www.youtube.com/embed/${key}`;
+  } else {
+    return 'https://usagi-post.com/wp-content/uploads/2020/05/no-image-found-360x250-1.png';
+  }
 }
